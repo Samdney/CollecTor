@@ -16,6 +16,7 @@ import java.util.Map;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 public class CleanUtilsTest{
@@ -42,16 +43,20 @@ public class CleanUtilsTest{
         testFiles.put("waffles.zip", tempfol.newFile("waffles.zip"));
         testFiles.put("bloo.txt", tempfol.newFile("bloo.txt"));
         testFiles.put("blah.tmp", tempfol.newFile("blah.tmp"));
+        //newFile() method also creates file, hence it can't be used below
+        testFiles.put("non-existent-file", new File(tempfol.getRoot(), "non-existent-file"));
+
         testFiles.put("Iamsocreative2.png", new File(subtempfol,"Iamsocreative2.png"));
         testFiles.put("waffles2.zip", new File(subtempfol,"waffles2.zip"));
         testFiles.put("bloo2.txt", new File(subtempfol,"bloo2.txt"));
         testFiles.put("blah2.tmp", new File(subtempfol,"blah2.tmp"));
+        testFiles.put("non-existent-subfile", new File(subtempfol,"non-existent-subfile"));
 
         for(Map.Entry<String, File> val : testFiles.entrySet()){
-            if(!val.getValue().exists()){
+            if(!val.getValue().exists() && !val.getKey().contains("existent")){
                 val.getValue().createNewFile();
             }
-            if(val.getKey().equals("Iamsocreative.png") || val.getKey().equals("Iamsocreative2.png")){
+            if(val.getKey().contains("Iamsocreative")){
                 val.getValue().setLastModified(testCutOffTime);
             }else{
                 val.getValue().setLastModified(cutOffTime);
@@ -66,15 +71,19 @@ public class CleanUtilsTest{
     @Test
     public void cleanDirTest() throws IOException{
         for(Map.Entry<String, File> val : testFiles.entrySet()){
-            assumeTrue(val.getValue().exists());
+            if(val.getKey().contains("existent")){
+                assumeFalse(val.getValue().exists());
+            } else {
+                assumeTrue(val.getValue().exists());
+            }
         }
 
         CleanUtils.cleanDir(tempfol.getRoot().toPath(), setCutOffTime);
 
         for(Map.Entry<String, File> val : testFiles.entrySet()){
-            if(val.getKey().equals("Iamsocreative.png") || val.getKey().equals("Iamsocreative2.png")) {
+            if(val.getKey().contains("Iamsocreative")) {
                 assertTrue(val.getValue().exists());
-            }else{
+            } else{
                 assertFalse(val.getValue().exists());
             }
         }
@@ -87,13 +96,17 @@ public class CleanUtilsTest{
     @Test
     public void cleanDirWithPatternTest() throws IOException{
         for(Map.Entry<String, File> val : testFiles.entrySet()){
-            assumeTrue(val.getValue().exists());
+            if(val.getKey().contains("existent")){
+                assumeFalse(val.getValue().exists());
+            } else {
+                assumeTrue(val.getValue().exists());
+            }
         }
 
         CleanUtils.cleanDirPattern(tempfol.getRoot().toPath(), setCutOffTime, suffixTest);
 
         for(Map.Entry<String, File> val : testFiles.entrySet()){
-            if(val.getValue().toString().endsWith(suffixTest) && val.getValue().lastModified() < setCutOffTime){
+            if(val.getValue().toString().endsWith(suffixTest) && val.getValue().lastModified() < setCutOffTime || val.getKey().contains("existent")){
                 assertFalse(val.getValue().exists());
             }else{
                 assertTrue(val.getValue().exists());
@@ -108,7 +121,11 @@ public class CleanUtilsTest{
     @Test
     public void renameFilesTest() throws IOException{
         for(Map.Entry<String, File> val : testFiles.entrySet()){
-            assumeTrue(val.getValue().exists());
+            if(val.getKey().contains("existent")){
+                assumeFalse(val.getValue().exists());
+            } else {
+                assumeTrue(val.getValue().exists());
+            }
         }
 
         CleanUtils.renameFiles(tempfol.getRoot().toPath(), suffixTest);
@@ -125,6 +142,8 @@ public class CleanUtilsTest{
 
         assertFalse(testFiles.get("waffles.zip").exists());
         assertFalse(testFiles.get("waffles2.zip").exists());
+        assertFalse(testFiles.get("non-existent-file").exists());
+        assertFalse(testFiles.get("non-existent-subfile").exists());
     }
 
     /**
@@ -134,7 +153,11 @@ public class CleanUtilsTest{
     @Test
     public void renameTmpFilesTest() throws IOException{
         for(Map.Entry<String, File> val : testFiles.entrySet()){
-            assumeTrue(val.getValue().exists());
+            if(val.getKey().contains("existent")){
+                assumeFalse(val.getValue().exists());
+            } else {
+                assumeTrue(val.getValue().exists());
+            }
         }
 
         CleanUtils.renameTmpFiles(tempfol.getRoot().toPath());
@@ -151,5 +174,37 @@ public class CleanUtilsTest{
 
         assertFalse(testFiles.get("blah.tmp").exists());
         assertFalse(testFiles.get("blah2.tmp").exists());
+        assertFalse(testFiles.get("non-existent-file").exists());
+        assertFalse(testFiles.get("non-existent-subfile").exists());
+    }
+
+    /**
+     * Tests all CleanUtils methods for null input specifically.
+     * Subfolders are not tested.
+     * Expects a NullPointerException
+     */
+    @Test(expected = NullPointerException.class)
+    public void nullTest(){
+        try {
+            CleanUtils.cleanDir(null, setCutOffTime);
+            CleanUtils.cleanDirPattern(null, setCutOffTime, suffixTest);
+            CleanUtils.renameFiles(null, suffixTest);
+            CleanUtils.renameTmpFiles(null);
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Tests all CleanUtils methods for empty string input specifically.
+     * ub-folders are not tested.
+     * @throws IOException
+     */
+    @Test(expected = IOException.class)
+    public void emptyFileNameTest() throws IOException{
+        CleanUtils.cleanDir(tempfol.newFile("").toPath(), setCutOffTime);
+        CleanUtils.cleanDirPattern(tempfol.newFile("").toPath(), setCutOffTime, suffixTest);
+        CleanUtils.renameFiles(tempfol.newFile("").toPath(), suffixTest);
+        CleanUtils.renameTmpFiles(tempfol.newFile("").toPath());
     }
 }
