@@ -1,4 +1,4 @@
-/* Copyright 2016 The Tor Project
+/* Copyright 2016--2017 The Tor Project
  * See LICENSE for licensing information */
 
 package org.torproject.collector.conf;
@@ -256,7 +256,8 @@ public class Configuration extends Observable implements Cloneable {
    * Returns a {@code SourceType} as List, e.g.
    * {@code sourcetypeproperty = Remote, Sync}.
    */
-  public Set<SourceType> getSourceTypeSet(Key key) throws ConfigurationException {
+  public Set<SourceType> getSourceTypeSet(Key key)
+      throws ConfigurationException {
     Set<SourceType> res = null;
     try {
       checkClass(key, SourceType[].class);

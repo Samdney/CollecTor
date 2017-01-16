@@ -1,4 +1,4 @@
-/* Copyright 2010--2016 The Tor Project
+/* Copyright 2010--2017 The Tor Project
  * See LICENSE for licensing information */
 
 package org.torproject.collector.bridgedescs;
@@ -31,8 +31,8 @@ public class BridgeDescriptorParser {
 
   /** Parses the first line of the given descriptor data to determine the
    * descriptor type and passes it to the sanitized bridges writer. */
-  public void parse(byte[] allData, String dateTime, String authorityFingerprint)
-      throws ConfigurationException {
+  public void parse(byte[] allData, String dateTime,
+      String authorityFingerprint) throws ConfigurationException {
     try {
       BufferedReader br = new BufferedReader(new StringReader(
           new String(allData, "US-ASCII")));

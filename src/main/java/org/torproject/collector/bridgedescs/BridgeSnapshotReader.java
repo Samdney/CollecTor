@@ -1,4 +1,4 @@
-/* Copyright 2010--2016 The Tor Project
+/* Copyright 2010--2017 The Tor Project
  * See LICENSE for licensing information */
 
 package org.torproject.collector.bridgedescs;
@@ -37,7 +37,8 @@ public class BridgeSnapshotReader {
    * Reads the half-hourly snapshots of bridge descriptors from Bifroest.
    */
   public BridgeSnapshotReader(BridgeDescriptorParser bdp,
-      File bridgeDirectoriesDir, File statsDirectory) throws ConfigurationException {
+      File bridgeDirectoriesDir, File statsDirectory)
+      throws ConfigurationException {
 
     if (bdp == null || bridgeDirectoriesDir == null
         || statsDirectory == null) {

@@ -1,4 +1,4 @@
-/* Copyright 2010--2016 The Tor Project
+/* Copyright 2010--2017 The Tor Project
  * See LICENSE for licensing information */
 
 package org.torproject.collector.relaydescs;
@@ -671,7 +671,8 @@ public class ArchiveWriter extends CollecTorMain {
     dayDirectoryFileFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     File tarballFile = Paths.get(this.outputDirectory, MICRODESC,
         yearMonthDirectoryFormat.format(validAfter), CONSENSUS_MICRODESC,
-        dayDirectoryFileFormat.format(validAfter) + "-consensus-microdesc").toFile();
+        dayDirectoryFileFormat.format(validAfter)
+        + "-consensus-microdesc").toFile();
     boolean tarballFileExistedBefore = tarballFile.exists();
     File rsyncFile = Paths.get(recentPathName, RELAY_DESCRIPTORS, MICRODESCS,
         CONSENSUS_MICRODESC, tarballFile.getName()).toFile();
