@@ -179,32 +179,90 @@ public class CleanUtilsTest{
     }
 
     /**
-     * Tests all CleanUtils methods for null input specifically.
-     * Subfolders are not tested.
-     * Expects a NullPointerException
+     * Tests cleanDir() for null input.
+     *
+     * Sub-folders are not tested.
+     * Expects a {@code NullPointerException}.
      */
     @Test(expected = NullPointerException.class)
-    public void nullTest(){
-        try {
-            CleanUtils.cleanDir(null, setCutOffTime);
-            CleanUtils.cleanDirPattern(null, setCutOffTime, suffixTest);
-            CleanUtils.renameFiles(null, suffixTest);
-            CleanUtils.renameTmpFiles(null);
-        } catch(IOException e){
-            e.printStackTrace();
-        }
+    public void cleanDirNullTest() throws IOException{
+        CleanUtils.cleanDir(null, setCutOffTime);
     }
 
     /**
-     * Tests all CleanUtils methods for empty string input specifically.
-     * ub-folders are not tested.
-     * @throws IOException
+     * Tests cleanDirPattern() for null input.
+     *
+     * Sub-folders are not tested.
+     * Expects a {@code NullPointerException}.
+     */
+    @Test(expected = NullPointerException.class)
+    public void cleanDirPatNullTest() throws IOException{
+        CleanUtils.cleanDirPattern(null, setCutOffTime, suffixTest);
+    }
+
+    /**
+     * Tests renameFiles() for null input.
+     *
+     * Sub-folders are not tested.
+     * Expects a {@code NullPointerException}.
+     */
+    @Test(expected = NullPointerException.class)
+    public void renameFilesNullTest() throws IOException{
+        CleanUtils.renameFiles(null, suffixTest);
+    }
+
+    /**
+     * Tests renameTmpFiles() for null input.
+     *
+     * Sub-folders are not tested.
+     * Expects a {@code NullPointerException}.
+     */
+    @Test(expected = NullPointerException.class)
+    public void renameTmpNullTest() throws IOException{
+        CleanUtils.renameTmpFiles(null);
+    }
+
+    /**
+     * Tests cleanDir() for empty string input.
+     *
+     * Sub-folders are not tested.
+     * Expects an {@code IOException}.
      */
     @Test(expected = IOException.class)
-    public void emptyFileNameTest() throws IOException{
+    public void cleanDirEmptyFileNameTest() throws IOException{
         CleanUtils.cleanDir(tempfol.newFile("").toPath(), setCutOffTime);
+    }
+
+    /**
+     * Tests cleanDirPattern() for empty string input.
+     *
+     * Sub-folders are not tested.
+     * Expects an {@code IOException}.
+     */
+    @Test(expected = IOException.class)
+    public void cleanDirPatEmptyFileNameTest() throws IOException{
         CleanUtils.cleanDirPattern(tempfol.newFile("").toPath(), setCutOffTime, suffixTest);
+    }
+
+    /**
+     * Tests renameFiles() for empty string input.
+     *
+     * Sub-folders are not tested.
+     * Expects an {@code IOException}.
+     */
+    @Test(expected = IOException.class)
+    public void renameFilesEmptyFileNameTest() throws IOException{
         CleanUtils.renameFiles(tempfol.newFile("").toPath(), suffixTest);
+    }
+
+    /**
+     * Tests renameTmpFiles() for empty string input.
+     *
+     * Sub-folders are not tested.
+     * Expects an {@code IOException}.
+     */
+    @Test(expected = IOException.class)
+    public void renameTmpEmptyFileNameTest() throws IOException{
         CleanUtils.renameTmpFiles(tempfol.newFile("").toPath());
     }
 }
